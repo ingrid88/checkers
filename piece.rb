@@ -141,8 +141,8 @@ class Piece
   end
 
  #put into board class!
-  def remove!(pos)
-    board[pos] = nil
+  def remove!(jumped_pos)
+    board[jumped_pos] = nil
   end
 
 
