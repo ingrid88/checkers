@@ -52,8 +52,19 @@ class Piece
   end
 
   def perform_slide(to_pos)
-    if valid_slide?
-      move!
+    if valid_slide?(to_pos)
+      move!(to_pos)
+      return true
+    else
+      return false
+    end
+  end
+
+  def perform_jump(to_pos)
+    if valid_jump?(to_pos)
+      move!(to_pos)
+      jumped_pos = jumped(to_pos)
+      remove!(jumped_pos)
       return true
     else
       return false
