@@ -18,6 +18,23 @@ class Piece
     board[to_pos] = self
   end
 
+  def perform_moves!(*to_pos)
+
+  end
+
+  def king_me(to_pos)
+    if kingable?(to_pos)
+      self.status = :king
+    end
+  end
+
+  def kingable?(to_pos)
+    x,y = to_pos
+    side = (color == :white) ? 7 : 0
+    
+    board[to_pos] == y
+  end
+
   def diff_color?(pos)
     if board[pos].nil?
       return false
