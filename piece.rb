@@ -12,18 +12,76 @@ class Piece
     board.add_piece(self, pos)
   end
 
-  # def perform_slide
-  #   #
-  #
-  # end
-  #
-  # def perform_jump
-  # end
-  #
-  #
-  # def remove_pieces!(*jumped_pieces)
-  #   jumped_pieces.each{ |jumped_piece_pos| self[jumped_piece_pos] = nil}
-  # end
+
+  def perform_slide
+
+  end
+
+  # delegates to perform_slide and perform_jump
+  def perform_move?(*to_pos)
+    from_row, from_col = self.pos
+    to_row, to_col = to_pos.first
+
+    row_change = (to_row - from_row).abs
+    col_change = (to_col - from_col).abs
+    change = [row_change, col_change]
+    if change == [1,1]
+      perform_slide(to_pos.first)
+    elsif change ==[2,2]
+      perform_jump(*to_pos)
+    else
+      return false
+    end
+      return true
+  end
+
+  def move!(to_pos)
+    board[self.pos] = nil
+    self.pos = to_pos
+    board[to_pos] = self
+  end
+
+
+
+  def render
+    symbols[color]
+  end
+
+  def symbols
+    { white: '$ ', red: '& ' }
+  end
+
+  def perform_slide?(to_pos)
+    if valid_slide?(to_pos)
+      self.pos = to_pos
+      return true
+    else
+      return false
+    end
+  end
+
+  def perform_jump?(*to_pos)
+
+    to_pos.each |next_pos|
+      if valid_jump?(next_pos)
+        jump(next_pos)
+        jumped_pieces = find_jumped_pieces
+        remove_pieces!(*jumped_pieces)
+      end
+
+  end
+
+  def jump()
+  end
+  def find_jumped_pieces
+  end
+
+  def valid_jump?
+  end
+
+  def remove_pieces!(*jumped_pieces)
+    jumped_pieces.each{ |jumped_piece_pos| self[jumped_piece_pos] = nil}
+  end
   #
   # def move_piece!(from_pos, *to_pos)
   #
@@ -35,16 +93,8 @@ class Piece
   #   piece_status()
   # end
   #
-  #
-  # def perform_slide(*to_pos)
-  #
-  #
-  # end
-  #
-  # def perform_jump(to_pos)
-  # end
-  #
-  # def possible_moves(color, pos)
+
+  # def move(color, pos)
   #   #if piece is white and is a man row is 1 direction
   #   #if piece is red and is a man, row direction is -1 direction
   #   row_dir = (color == :white) ? 1 : -1
@@ -75,17 +125,6 @@ class Piece
   #   valid_moves
   # end
   #
-  # def move_type(from_pos, *to_pos)
-  #   from_row, from_col = from_pos
-  #   to_row, to_col = to_pos.first
-  #
-  #   row_change = (to_row - from_row).abs
-  #   col_change = (to_col - from_col).abs
-  #
-  #   change = [row_change, col_change]
-  #
-  #   change == [1,1]  ? :SLIDE : :JUMP
-  # end
   #
   #
   # def on_board?(possible_moves)

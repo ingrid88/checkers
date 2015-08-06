@@ -1,4 +1,5 @@
 require_relative 'piece'
+require 'colorize'
 
 class Board
   WHITE_SPOT = [
@@ -50,11 +51,25 @@ class Board
     self[pos] = piece
   end
 
+  def display
+    print "0 1 2 3 4 5 6 7 \n"
+    (0...SIZE).each do |row|
+      (0...SIZE).each do |col|
+        color = (col.odd? && row.odd?) || (col.even? && row.even?) ? :blue : :red
+        if self[[row,col]].nil?
+          print "  ".colorize(:background => color)
+         else
+          print self[[row,col]].render.colorize(:background => color)
+         end
+      end
+      print "\n"
+    end
+  end
+
   def move_piece(turn_color, from_pos, *to_pos)
     # perform checks
     piece = self[from_pos]
-    piece.perform_slide(*to_pos)
-    piece.perform_jump(*to_pos)
+    piece.perform_move(*to_pos)
 
     # move_piece!(from_pos, to_pos.last)
     # jumped_pieces = find_jumped_pieces
