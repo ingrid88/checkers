@@ -65,6 +65,7 @@ class Board
     possible_moves = [] #there are only two...if any
     row, col = from_pos
 
+    ### THIS DOES NOT YET CHECK IF MOVE IS ON THE BOARD ###
     # if man
     possible_moves[0] = [row + row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
     possible_moves[1] = [row + row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
@@ -78,8 +79,19 @@ class Board
   end
 
   def perform_jump(color, from_pos)
+    row_dir = (color == :white) ? 1 : -1
+    possible_moves = [] #there are only two...if any
+    row, col = from_pos
 
+    possible_moves[0] = [row + row_dir * JUMP_MOVE[0], col + JUMP_MOVE[1]] # right
+    possible_moves[1] = [row + row_dir * JUMP_MOVE[0], col - JUMP_MOVE[1]] # left
 
+    if  self[from_pos].status == :king     # if king
+      possible_moves[2] = [row - row_dir * JUMP_MOVE[0], col + JUMP_MOVE[1]] # right
+      possible_moves[3] = [row - row_dir * JUMP_MOVE[0], col - JUMP_MOVE[1]] # left
+    end
+
+    possible_moves
   end
 
   def add_piece(piece, pos)
