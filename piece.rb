@@ -79,6 +79,12 @@ class Piece
     board[to_pos].nil?
   end
 
+  def on_board?(to_pos)
+    x,y = to_pos
+    return true if x.between?(0..7) || y.between?(0..7)
+    return false
+  end
+
   def valid_jump?(to_pos)
     dx, dy = directions
     dx, dy = dx * JUMP, dy * JUMP
