@@ -13,6 +13,9 @@ class Board
 
   SIZE = 8
 
+  SLIDE_MOVE = [1,1] # [1,-1], [-1,1],[-1,-1]
+  JUMP_MOVE = [2,2] # [2,-2], [-2,2],[-2,-2]
+
   def initialize(fill_board = true) #also let pieces populate board themselves
     make_grid(fill_board)
   end
@@ -35,6 +38,8 @@ class Board
   end
 
   def find_jumped_pieces
+    #
+    jumped_pieces
   end
 
   def remove_pieces!(*jumped_pieces)
@@ -53,11 +58,20 @@ class Board
 
   end
 
-  def perform_slide
+  def perform_slide(color, from_pos)
+    #if piece is white and is a man row is 1 direction
+    #if piece is red and is a man, row direction is -1 direction
+    row_dir = (color == :white) ? 1 : -1
+    possible_moves = [] #there are only two...if any
+    row, col = from_pos
 
+    possible_moves[0] = [row + row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
+    possible_moves[1] = [row + row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
 
+    possible_moves
   end
-  def perform_jump
+
+  def perform_jump(color, from_pos)
 
 
   end
