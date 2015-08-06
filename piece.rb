@@ -81,8 +81,9 @@ class Piece
 
     if empty_spot?(to_pos) && moves_that_dir && on_board?(pos)
       return true
+    else
+      return false
     end
-    return false
   end
 
   def empty_spot?(to_pos)
@@ -96,19 +97,18 @@ class Piece
   end
 
   def valid_jump?(to_pos)
-    dx, dy = directions
-    dx, dy = dx * JUMP, dy * JUMP
-    new_direction = [dx,dy]
+    new_directions = directions.map{|dx,dy| [dx*JUMP, dy*JUMP]}
 
-    valid_dir = directions.any?{ |dir| dir == valid_change(to_pos)}
+    valid_dir = new_directions.any?{ |dir| dir == valid_change(to_pos)}
     free_spot = empty_spot?(to_pos)
 
-    if free_spot && valid_dir && piece_jumped?(to_pos)
+    if free_spot && valid_dir && piece_jumped?(to_pos) && on_board?(to_pos)
       return true
     end
     return false
   end
 
+  #works
   def jumped(to_pos)
     dx, dy = change(to_pos)
     dx, dy = dx / 2, dy / 2
@@ -128,7 +128,7 @@ class Piece
     end
 
   end
-  
+
  #put into board class!
   def remove!(pos)
     board[pos] = nil
