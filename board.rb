@@ -65,8 +65,14 @@ class Board
     possible_moves = [] #there are only two...if any
     row, col = from_pos
 
+    # if man
     possible_moves[0] = [row + row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
     possible_moves[1] = [row + row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
+
+    if  self[from_pos].status == :king     # if king
+      possible_moves[2] = [row - row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
+      possible_moves[3] = [row - row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
+    end
 
     possible_moves
   end
