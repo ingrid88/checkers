@@ -62,9 +62,9 @@ class Piece
 
   def perform_jump(to_pos)
     if valid_jump?(to_pos)
-      move!(to_pos)
       jumped_pos = jumped(to_pos)
       remove!(jumped_pos)
+      move!(to_pos)
       return true
     else
       return false
