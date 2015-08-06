@@ -1,7 +1,7 @@
 class Piece
 
-  SLIDE_MOVE = [1,1] # [1,-1], [-1,1],[-1,-1]
-  JUMP_MOVE = [2,2] # [2,-2], [-2,2],[-2,-2]
+  SLIDE = 1
+  JUMP = 2
 
   attr_reader :board, :color
   attr_accessor :pos, :status
@@ -12,36 +12,11 @@ class Piece
     board.add_piece(self, pos)
   end
 
-
-  def perform_slide
-
-  end
-
-  # delegates to perform_slide and perform_jump
-  def perform_move?(*to_pos)
-    from_row, from_col = self.pos
-    to_row, to_col = to_pos.first
-
-    row_change = (to_row - from_row).abs
-    col_change = (to_col - from_col).abs
-    change = [row_change, col_change]
-    if change == [1,1]
-      perform_slide(to_pos.first)
-    elsif change ==[2,2]
-      perform_jump(*to_pos)
-    else
-      return false
-    end
-      return true
-  end
-
   def move!(to_pos)
     board[self.pos] = nil
     self.pos = to_pos
     board[to_pos] = self
   end
-
-
 
   def render
     symbols[color]
@@ -51,37 +26,114 @@ class Piece
     { white: '$ ', red: '& ' }
   end
 
-  def perform_slide?(to_pos)
-    if valid_slide?(to_pos)
-      self.pos = to_pos
-      return true
-    else
-      return false
-    end
+  def king?
+    self.status == :king
   end
 
-  def perform_jump?(*to_pos)
+  def directions
+    #if piece is white and is a man row is 1 direction
+    #if piece is red and is a man, row direction is -1 direction
+    row_dir = (color == :white) ? 1 : -1
 
-    to_pos.each |next_pos|
-      if valid_jump?(next_pos)
-        jump(next_pos)
-        jumped_pieces = find_jumped_pieces
-        remove_pieces!(*jumped_pieces)
+    mov_right = [ row_dir, 1 ]
+    mov_left = [ row_dir, -1 ]
+
+    dir = king? ? [mov_left.abs] : [mov_left, mov_right]
+  end
+
+  def change(to_pos)
+    from_row, from_col = self.pos
+    to_row, to_col = to_pos
+
+    row_change = (to_row - from_row)
+    col_change = (to_col - from_col)
+
+    change = king? ? [row_change.abs, col_change.abs] : [row_change, col_change]
+  end
+
+  def valid_slide?(to_pos)
+    if empty_spot?(to_pos) && directions.any?{ |dir| dir == change(to_pos)}
+      move!(to_pos)
+      return true
+    end
+    return false
+  end
+
+  def empty_spot?(to_pos)
+    board[to_pos].nil?
+  end
+
+  def valid_jump?(to_pos)
+    dx, dy = direction
+    dx = dx * 2
+    p "change : #{change}"
+    if empty_spot?(to_pos)
+    # if man
+      if (change == [2 * row_dir , 2 ] || change == [ 1 * row_dir , -1 ])
+        move!(to_pos)
+        return true
+      # if king
+    elsif king && (change == [-1 * row_dir , 1] || change == [-1 * row_dir ,-1])
+        move!(to_pos)
+        return true
       end
 
+    end
+    return false
   end
 
-  def jump()
-  end
+  # def jump?(next)
+  # end
+
   def find_jumped_pieces
-  end
-
-  def valid_jump?
   end
 
   def remove_pieces!(*jumped_pieces)
     jumped_pieces.each{ |jumped_piece_pos| self[jumped_piece_pos] = nil}
   end
+
+
+    # delegates to perform_slide and perform_jump
+  # def perform_move?(*to_pos)
+  #   from_row, from_col = self.pos
+  #   to_row, to_col = to_pos.first
+  #
+  #   row_change = (to_row - from_row).abs
+  #   col_change = (to_col - from_col).abs
+  #   change = [row_change, col_change]
+  #   if change == [1,1]
+  #     perform_slide(to_pos.first)
+  #   elsif change ==[2,2]
+  #     perform_jump(*to_pos)
+  #   else
+  #     return false
+  #   end
+  #     return true
+  # end
+  #
+  #
+  # def perform_jump?(*to_pos)
+  #
+  #   to_pos.each |next_pos|
+  #     if valid_jump?(next_pos)
+  #       jump(next_pos)
+  #       jumped_pieces = find_jumped_pieces
+  #       remove_pieces!(*jumped_pieces)
+  #     end
+  #
+  # end
+  #
+  # def jump()
+  # end
+  # def find_jumped_pieces
+  # end
+  #
+  # def valid_jump?
+  # end
+  #
+  # def remove_pieces!(*jumped_pieces)
+  #   jumped_pieces.each{ |jumped_piece_pos| self[jumped_piece_pos] = nil}
+  # end
   #
   # def move_piece!(from_pos, *to_pos)
   #
