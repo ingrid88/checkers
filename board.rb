@@ -58,41 +58,40 @@ class Board
 
   end
 
-  def perform_slide(color, from_pos)
+  def move_type(from_pos, *to_pos)
+    from_row, from_col = from_pos
+    to_row, to_col = to_pos.first
+
+    row_change = (to_row - from_row).abs
+    col_change = (to_col - from_col).abs
+
+    change = [row_change, col_change]
+
+    change == [1,1]  ? :SLIDE : :JUMP
+  end
+
+  def perform_slide(color, from_pos, move_type)
     #if piece is white and is a man row is 1 direction
     #if piece is red and is a man, row direction is -1 direction
     row_dir = (color == :white) ? 1 : -1
+    move_change = (move_type == :JUMP) ? JUMP_MOVE : SLIDE_MOVE
+
     possible_moves = [] #there are only two...if any
     row, col = from_pos
 
     ### THIS DOES NOT YET CHECK IF MOVE IS ON THE BOARD ###
     # if man
-    possible_moves[0] = [row + row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
-    possible_moves[1] = [row + row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
+    possible_moves[0] = [row + row_dir * move_change[0], col + move_change[1]] # right
+    possible_moves[1] = [row + row_dir * move_change[0], col - move_change[1]] # left
 
     if  self[from_pos].status == :king     # if king
-      possible_moves[2] = [row - row_dir * SLIDE_MOVE[0], col + SLIDE_MOVE[1]] # right
-      possible_moves[3] = [row - row_dir * SLIDE_MOVE[0], col - SLIDE_MOVE[1]] # left
+      possible_moves[2] = [row - row_dir * move_change[0], col + move_change[1]] # right
+      possible_moves[3] = [row - row_dir * move_change[0], col - move_change[1]] # left
     end
 
     possible_moves
   end
 
-  def perform_jump(color, from_pos)
-    row_dir = (color == :white) ? 1 : -1
-    possible_moves = [] #there are only two...if any
-    row, col = from_pos
-
-    possible_moves[0] = [row + row_dir * JUMP_MOVE[0], col + JUMP_MOVE[1]] # right
-    possible_moves[1] = [row + row_dir * JUMP_MOVE[0], col - JUMP_MOVE[1]] # left
-
-    if  self[from_pos].status == :king     # if king
-      possible_moves[2] = [row - row_dir * JUMP_MOVE[0], col + JUMP_MOVE[1]] # right
-      possible_moves[3] = [row - row_dir * JUMP_MOVE[0], col - JUMP_MOVE[1]] # left
-    end
-
-    possible_moves
-  end
 
   def add_piece(piece, pos)
     self[pos] = piece
