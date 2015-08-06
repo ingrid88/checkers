@@ -51,6 +51,15 @@ class Piece
     dir = king? ? [mov_left.abs] : [mov_left, mov_right]
   end
 
+  def perform_slide(to_pos)
+    if valid_slide?
+      move!
+      return true
+    else
+      return false
+    end
+  end
+
   def change(to_pos)
     from_row, from_col = self.pos
     to_row, to_col = to_pos
@@ -68,8 +77,9 @@ class Piece
   end
 
   def valid_slide?(to_pos)
-    if empty_spot?(to_pos) && directions.any?{ |dir| dir == valid_change(to_pos)}
-      move!(to_pos)
+    moves_that_dir = directions.any?{ |dir| dir == valid_change(to_pos)}
+
+    if empty_spot?(to_pos) && moves_that_dir && on_board?(pos)
       return true
     end
     return false
@@ -81,7 +91,7 @@ class Piece
 
   def on_board?(to_pos)
     x,y = to_pos
-    return true if x.between?(0..7) || y.between?(0..7)
+    return true if x.between?(0,7) || y.between?(0,7)
     return false
   end
 
@@ -94,17 +104,11 @@ class Piece
     free_spot = empty_spot?(to_pos)
 
     if free_spot && valid_dir && piece_jumped?(to_pos)
-      move!(to_pos)
-      remove!(to_pos)
       return true
     end
     return false
   end
 
-
-
-  # def jump?(next)
-  # end
   def jumped(to_pos)
     dx, dy = change(to_pos)
     dx, dy = dx / 2, dy / 2
@@ -124,10 +128,10 @@ class Piece
     end
 
   end
-
-  def remove!(to_pos)
-    x, y   = jumped(to_pos)
-    board[[jumped_x, jumped_y]] = nil
+  
+ #put into board class!
+  def remove!(pos)
+    board[pos] = nil
   end
 
 
