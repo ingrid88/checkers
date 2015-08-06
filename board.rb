@@ -18,9 +18,15 @@ class Board
   end
 
   def fill_rows(color)
-    
-    # red pieces go in
-    # white pieces go
+    position_list = (color == :white) ? WHITE_SPOT : RED_SPOTS
+
+    position_list.each do |position|
+      piece_class.new(color,self, position)
+    end
+  end
+
+  def add_piece(piece, pos)
+    self[pos] = piece
   end
 
   def make_grid(fill_board)
