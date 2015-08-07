@@ -21,12 +21,26 @@ class Board
 
   attr_reader :grid
 
-  def initialize #also let pieces populate board themselves
+  def initialize(fill_board = true) #also let pieces populate board themselves
     @grid = Array.new(8) {Array.new(8)}
-    [:white, :red].each do |color|
-      fill_grid(color)
+    if fill_board
+      [:white, :red].each do |color|
+        fill_grid(color)
+      end
     end
   end
+
+  def board_dup
+    board_copy = Board.new(false)
+    pieces.each do |piece|
+      piece.new(piece.color, board_copy, piece.pos, piece.status)
+    end
+  end
+
+  def pieces
+     grid.flatten.compact
+  end
+
 
   def fill_grid(color)
     position_list = (color == :white) ? WHITE_SPOT : RED_SPOTS
@@ -52,8 +66,10 @@ class Board
   end
 
   def display
-    print "0 1 2 3 4 5 6 7 \n"
+    list = [0,1,2,3,4,5,6,7]
+    print "  0 1 2 3 4 5 6 7 \n"
     (0...SIZE).each do |row|
+      print "#{list[row]} "
       (0...SIZE).each do |col|
         color = (col.odd? && row.odd?) || (col.even? && row.even?) ? :blue : :red
         if self[[row,col]].nil?

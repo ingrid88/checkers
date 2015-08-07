@@ -18,8 +18,13 @@ class Piece
     board[to_pos] = self
   end
 
-  def perform_moves!(*to_pos)
+  def perform_moves!(*moves)
 
+    if !perform_slide(moves.first)
+        moves.each do |move|
+          raise InvalidMoveError unless perform_jump(move)
+        end
+    end
   end
 
   def king_me(to_pos)
@@ -50,7 +55,7 @@ class Piece
   end
 
   def symbols
-    { white: '$ ', red: '& ' }
+    { white: 'W ', red: 'R ' }
   end
 
   def king?
@@ -161,6 +166,14 @@ class Piece
   def remove!(jumped_pos)
     board[jumped_pos] = nil
   end
+
+
+end
+
+
+
+class InvalidMoveError < StandardError
+
 
 
 end
