@@ -29,10 +29,10 @@ class Piece
   end
 
   def kingable?(to_pos)
-    x,y = to_pos
+    row,col = to_pos
     side = (color == :white) ? 7 : 0
-    
-    board[to_pos] == y
+
+    row == side
   end
 
   def diff_color?(pos)
